@@ -1,0 +1,81 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Leaps VAE Trainer",
+            "type": "python",
+            "request": "launch",
+            "program": "main_trainer.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--experiment_name", "leaps_vae_debug",
+                     "--model_name", "LeapsVAE",
+                     "--model_hidden_size", "32",
+                     "--data_batch_size", "32",
+                     "--data_reduce_dataset",
+                     "--disable_gpu"]
+        },
+        {
+            "name": "Policy VAE Trainer",
+            "type": "python",
+            "request": "launch",
+            "program": "main_trainer.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--experiment_name", "policy_vae_debug",
+                     "--model_name", "PolicyVAE",
+                     "--model_hidden_size", "32",
+                     "--data_batch_size", "32",
+                     "--data_reduce_dataset",
+                     "--disable_gpu"]
+        },
+        {
+            "name": "Double VAE Trainer",
+            "type": "python",
+            "request": "launch",
+            "program": "main_trainer.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--experiment_name", "double_vae_debug",
+                     "--model_name", "DoubleVAE",
+                     "--model_hidden_size", "32",
+                     "--data_batch_size", "32",
+                     "--data_reduce_dataset",
+                     "--disable_gpu"]
+        },
+        {
+            "name": "Sketch VAE Trainer",
+            "type": "python",
+            "request": "launch",
+            "program": "main_trainer.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--experiment_name", "sketch_vae_debug",
+                     "--dsl_include_hole",
+                     "--model_name", "SketchVAE",
+                     "--data_class_name", "ProgramsOnlyDataset",
+                     "--data_program_dataset_path", "data/sketches_only.pkl",
+                     "--model_hidden_size", "32",
+                     "--data_batch_size", "32",
+                     "--disable_gpu"]
+        },
+        {
+            "name": "Leaps VAE Latent Search",
+            "type": "python",
+            "request": "launch",
+            "program": "main_latent_search.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--experiment_name", "leaps_vae_debug",
+                     "--model_name", "LeapsVAE",
+                     "--search_number_executions", "8",
+                     "--search_population_size", "32",
+                     "--model_hidden_size", "256",
+                     "--env_enable_leaps_behaviour",
+                     "--disable_gpu"]
+        }
+    ]
+}
