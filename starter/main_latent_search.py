@@ -28,6 +28,9 @@ if __name__ == '__main__':
     StdoutLogger.log('Main', f'Starting Latent Search with model {Config.model_name} for task {Config.env_task}')
     
     best_program, best_reward = searcher.search()
+
+    #optional: look at gifs
+    searcher.save_gifs(best_program)
     
     StdoutLogger.log('Main', f'Final program: {best_program}') 
     StdoutLogger.log('Main', f'Reward of Final Program: {best_reward}') 

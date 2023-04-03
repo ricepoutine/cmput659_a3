@@ -9,6 +9,10 @@ from vae.models.base_vae import BaseVAE
 from logger.stdout_logger import StdoutLogger
 from tasks.task import Task
 from config import Config
+import random
+
+#to control for random elite selection method
+random.seed(1)
 
 
 class LatentSearch:
@@ -26,6 +30,7 @@ class LatentSearch:
         self.sigma = Config.search_sigma
         self.model_hidden_size = Config.model_hidden_size
         self.task_envs = [task_cls(i) for i in range(self.number_executions)]
+        self.mean_search = Config.search_reduce_to_mean
         
     def init_population(self) -> torch.Tensor:
         """Initializes the CEM population from a normal distribution.
@@ -93,19 +98,22 @@ class LatentSearch:
             if current_best[1] < sorted_rewards[0]:
                 current_best = (sorted_candidates[0],sorted_rewards[0])
 
-            sorted_tensor = torch.stack(sorted_latents[0:self.n_elite])
-            #print(sorted_tensor.shape)
-            #print(sorted_tensor[0])
-            mean_elite = torch.mean(sorted_tensor,dim = 0,keepdim=True)
-            #print(mean_elite.shape)
             p = []
-            for _ in range(self.population_size):
-                #individual = mean_elite + self.sigma * N(0,1)
-                individual = mean_elite + self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
-                p.append(individual)
-            #print(p[0].shape)
-            #print(len(p))
+            #handle search types
+            if self.mean_search:
+                mean_elite = torch.mean(torch.stack(sorted_latents[0:self.n_elite]),dim = 0,keepdim=True)
+                for _ in range(self.population_size):
+                    #individual = mean_elite + self.sigma * N(0,1)
+                    individual = mean_elite + self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
+                    p.append(individual)
+            else:
+                for _ in range(self.population_size):
+                    #individual = mean_elite + self.sigma * N(0,1)
+                    elite = random.choice(sorted_latents[0:self.n_elite])
+                    individual = torch.unsqueeze(elite, 0) + self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
+                    p.append(individual)
             p = torch.cat(p)
+            #print(p.shape)
         return current_best[0], current_best[1]
 
     def save_gifs(self, program):
