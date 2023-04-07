@@ -28,9 +28,13 @@ if __name__ == '__main__':
     StdoutLogger.log('Main', f'Starting Latent Search with model {Config.model_name} for task {Config.env_task}')
     
     best_program, best_reward = searcher.search()
+    #best_program, best_reward = searcher.search_better()
 
     #optional: look at gifs
     searcher.save_gifs(best_program)
     
     StdoutLogger.log('Main', f'Final program: {best_program}') 
     StdoutLogger.log('Main', f'Reward of Final Program: {best_reward}') 
+
+# for ease of access: 
+# python main_latent_search.py --env_seed 1 --disable_gpu --search_number_iterations 20 --search_population_size 1028 --env_is_crashable

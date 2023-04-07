@@ -31,6 +31,7 @@ class LatentSearch:
         self.model_hidden_size = Config.model_hidden_size
         self.task_envs = [task_cls(i) for i in range(self.number_executions)]
         self.mean_search = Config.search_reduce_to_mean
+        self.naive_search = Config.search_naive
         
     def init_population(self) -> torch.Tensor:
         """Initializes the CEM population from a normal distribution.
@@ -83,37 +84,82 @@ class LatentSearch:
             rewards.append(mean_reward)
         return programs, torch.tensor(rewards, device=self.device)
     
-    def search(self) -> tuple[str, float, bool]:
-        current_best = ("", -float("inf"))
+    def search_better(self) -> tuple[str, float, bool]:
+        current_best = ("", -float("inf"), "")
         p = self.init_population()
+
+        #init actions list
+        actions = []
+        action_prefs = [1]*self.population_size
+        for _ in range(self.population_size):
+                            actions.append(self.sigma*float(torch.normal(mean=0.0, std=1.0, size=(1,1))))
+
         #print(p.shape)
-        for _ in range(self.number_iterations):
+        for iter in range(self.number_iterations):
             candidates, rewards = self.execute_population(p)
             #elite = #select the best k individuals in p
             sorted_latents = [lat for _,lat in sorted(zip(rewards, p), key=lambda comb: comb[0], reverse=True)]
             sorted_candidates = [cand for _,cand in sorted(zip(rewards, candidates), key=lambda comb: comb[0], reverse=True)]
             sorted_rewards = sorted(rewards, reverse=True)
-            
+
+            if iter%1 == 0: print(sorted_rewards[0:3])
+
             #update best individual
             if current_best[1] < sorted_rewards[0]:
-                current_best = (sorted_candidates[0],sorted_rewards[0])
+                print("found better one!")
+                current_best = (sorted_candidates[0],sorted_rewards[0], sorted_latents[0])
 
             p = []
             #handle search types
-            if self.mean_search:
-                mean_elite = torch.mean(torch.stack(sorted_latents[0:self.n_elite]),dim = 0,keepdim=True)
-                for _ in range(self.population_size):
-                    #individual = mean_elite + self.sigma * N(0,1)
-                    individual = mean_elite + self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
-                    p.append(individual)
-            else:
-                for _ in range(self.population_size):
-                    #individual = mean_elite + self.sigma * N(0,1)
-                    elite = random.choice(sorted_latents[0:self.n_elite])
-                    individual = torch.unsqueeze(elite, 0) + self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
-                    p.append(individual)
+            if self.even_better_search:
+                 for latent in range(self.population_size):
+                     individual = torch.unsqueeze(sorted_latents[latent],0) + self.sigma * torch.normal(mean=0.0, std=1.0, size=(1,self.model_hidden_size))
+                     p.append(individual)
             p = torch.cat(p)
-            #print(p.shape)
+
+        return current_best[0], current_best[1]
+
+    def search(self) -> tuple[str, float, bool]:
+        current_best = ("", -float("inf"), "")
+        p = self.init_population()
+
+        for iter in range(self.number_iterations):
+            candidates, rewards = self.execute_population(p)
+            sorted_latents = [lat for _,lat in sorted(zip(rewards, p), key=lambda comb: comb[0], reverse=True)]
+            sorted_candidates = [cand for _,cand in sorted(zip(rewards, candidates), key=lambda comb: comb[0], reverse=True)]
+            sorted_rewards = sorted(rewards, reverse=True)
+
+            #if iter%1 == 0: print(sorted_rewards[0:3])
+
+            #update best individual
+            if current_best[1] < sorted_rewards[0]:
+                print("found better one!")
+                current_best = (sorted_candidates[0],sorted_rewards[0], sorted_latents[0])
+
+            p = []
+            #handle search types
+            if self.naive_search:
+                for latent in range(self.population_size):
+                     individual = torch.unsqueeze(sorted_latents[latent],0)
+                     for i in range(self.model_hidden_size):
+                          individual[0][i] += self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
+                     p.append(individual)
+            else:
+                if self.mean_search:
+                    mean_elite = torch.mean(torch.stack(sorted_latents[0:self.n_elite]),dim = 0,keepdim=True)
+                    for _ in range(self.population_size):
+                        individual = mean_elite.detach().clone()
+                        for i in range(self.model_hidden_size):
+                            individual[0][i] += self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
+                        p.append(individual)
+                else:
+                    for _ in range(self.population_size):
+                        elite = random.choice(sorted_latents[0:self.n_elite])
+                        individual = torch.unsqueeze(elite,0)
+                        for i in range(self.model_hidden_size):
+                            individual[0][i] += self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
+                        p.append(individual)
+            p = torch.cat(p)
         return current_best[0], current_best[1]
 
     def save_gifs(self, program):
