@@ -29,9 +29,10 @@ if __name__ == '__main__':
     
     best_program, best_reward = searcher.search()
     #best_program, best_reward = searcher.search_better()
+    searcher.test_suite(10)
 
     #optional: look at gifs
-    searcher.save_gifs(best_program)
+    #searcher.save_gifs(best_program)
     
     StdoutLogger.log('Main', f'Final program: {best_program}') 
     StdoutLogger.log('Main', f'Reward of Final Program: {best_reward}') 
