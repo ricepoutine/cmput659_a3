@@ -129,8 +129,6 @@ class LatentSearch:
             sorted_candidates = [cand for _,cand in sorted(zip(rewards, candidates), key=lambda comb: comb[0], reverse=True)]
             sorted_rewards = sorted(rewards, reverse=True)
 
-            #if iter%1 == 0: print(sorted_rewards[0:3])
-
             #update best individual
             if current_best[1] < sorted_rewards[0]:
                 print("found better one!")
@@ -175,3 +173,11 @@ class LatentSearch:
             env = Environment(state, exec_program)
             env.run_and_trace('trace_' + str(env_number) + '.gif')
             env_number += 1
+
+    def test_suite(self, test_iterations):
+        results_cache = []
+        for test_id in range(test_iterations):
+            print(f"test{test_id}: starting...")
+            best_program, best_reward = self.search()
+            print(f"test{test_id}: finished")
+            results_cache.append((best_program,best_reward))
