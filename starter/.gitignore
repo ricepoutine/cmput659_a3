@@ -1,6 +1,6 @@
 /data
 /env
-/output
+/output/logs
 /test
 /weights
 /leaps_results
