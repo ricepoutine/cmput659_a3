@@ -70,4 +70,4 @@ if __name__ == '__main__':
 
 
 # for ease of access: 
-# python main_latent_search.py --env_seed 1 --search_number_iterations 20 --search_population_size 1028 --env_is_crashable
+# python main_latent_search.py --env_seed 1 --search_number_iterations 20 --search_population_size 1028 --env_is_crashable --search_type naive

@@ -12,7 +12,7 @@ from config import Config
 import random
 
 #to control for random elite selection method
-random.seed(1)
+random.seed(Config.env_seed)
 
 
 class LatentSearch:
