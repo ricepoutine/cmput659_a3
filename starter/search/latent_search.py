@@ -84,7 +84,7 @@ class LatentSearch:
         return programs, torch.tensor(rewards, device=self.device)
 
     def search(self) -> tuple[str, float, bool]:
-        current_best = ("", -float("inf"), "")
+        current_best = ["", -float("inf"), ""]
         p = self.init_population()
 
         for iter in range(self.number_iterations):
@@ -94,12 +94,17 @@ class LatentSearch:
             sorted_candidates = [cand for _,cand in sorted(zip(rewards, candidates), key=lambda comb: comb[0], reverse=True)]
             sorted_rewards = sorted(rewards, reverse=True)
 
-            #update best individual
+            #update best individual (length check only when solve-all found, otherwise it might take too long. this is not used to bias search, only to report best)
             if current_best[1] < sorted_rewards[0]:
                 print("found better one!")
-                current_best = (sorted_candidates[0],sorted_rewards[0], sorted_latents[0])
-            #elif current_best[1] == sorted_rewards[0]:
-                #TODO IMPLEMENT TO SEE IF LENGTH ISSUE IS DUE TO BEST PROGRAM REPORTING!!! ONLY ONE EXPERIMENT: RDM_ELITE_50!
+                current_best = [sorted_candidates[0],sorted_rewards[0], sorted_latents[0]]
+            elif current_best[1] == sorted_rewards[0] and current_best[1] == 1:
+                best_candidates = [candidate for candidate,reward in zip(sorted_candidates, sorted_rewards) if reward == current_best[1]] #will return 0:n rewards
+                for cand in best_candidates:
+                    if len(cand.split(" ")) < len(current_best[0].split(" ")):
+                        delete_me = current_best[0]
+                        current_best[0] = cand
+                        print("best candidate updated by length!", len(delete_me.split(" ")), "reduced to", len(current_best[0].split(" ")))
                 
 
             p = []
