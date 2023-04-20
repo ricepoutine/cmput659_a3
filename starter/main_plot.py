@@ -5,13 +5,13 @@ import numpy as np
 import pandas as pd
 
 methods = [
-    #'mean_elite',
+    'mean_elite',
     'rdm_elite',
     'naive'
 ]
 
 method_labels = [
-    #'Mean Elite',
+    'Mean Elite',
     'Random Elite',
     'Naive'
 ]
@@ -51,8 +51,12 @@ if __name__ == '__main__':
                 method_median.append(method_data['Reward of Final Program:'].median())
                 method_low.append(method_data['Reward of Final Program:'].quantile(0.2))
                 method_high.append(method_data['Reward of Final Program:'].quantile(0.8))
+            
+            list_median.append(method_median)
+            list_low.append(method_low)
+            list_high.append(method_high)
         
-        print(list_median)
+        print(f"method: {method}; median:", method_low, method_high)
 
         plt.figure(figsize=(5,5))
         plt.suptitle(f'{task}')
@@ -60,12 +64,12 @@ if __name__ == '__main__':
         plt.xlabel('Number of Search Iterations')
         plt.ylabel('Best Reward') #averaged across seeds
         
-        for median, low, high in zip(list_median, list_low, list_high):
+        for median, low, high in zip(list_median, list_low, list_high): #median, low, high in zip(list_median, list_low, list_high):
             plt.fill_between([10,20,30,40,50], low, high, alpha=0.2, label='_nolegend_')
-            plt.plot(median, alpha=0.8)
+            plt.plot([10,20,30,40,50], median, alpha=0.8)
         
         plt.legend(method_labels)
-        
         plt.tight_layout()
         plt.savefig(f'{output_folder}/{task}.png')
         plt.close()
+
