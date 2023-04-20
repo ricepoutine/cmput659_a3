@@ -7,20 +7,22 @@ import pandas as pd
 methods = [
     'mean_elite',
     'rdm_elite',
-    'naive'
+    'naive',
+    #'normal'
 ]
 
 method_labels = [
     'Mean Elite',
     'Random Elite',
-    'Naive'
+    'Naive',
+    #'Gaussian'
 ]
 
 tasks = [
     #'StairClimber',
     'MazeSparse16',
-    #'MazeSparse12',
-    #'MazeSparse8'
+    'MazeSparse12',
+    'MazeSparse8'
 ]
 data_directory = 'output/results'
 output_folder = 'plots'
