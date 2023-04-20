@@ -54,7 +54,7 @@ if __name__ == '__main__':
     #main experiment control
 
     num_trials = 20 #20 = number of seeds, used to report average best program and error
-    search_iterations = [40] #[10, 20, 30, 40, 50]
+    search_iterations = [10, 30, 40, 50] #[10, 20, 30, 40, 50]
 
     for num_iterations in search_iterations:
         Config.search_number_iterations = num_iterations
