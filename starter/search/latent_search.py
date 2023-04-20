@@ -133,7 +133,7 @@ class LatentSearch:
                 for i in range(self.population_size):
                      individual = torch.zeros(1,self.model_hidden_size)
                      for i in range(self.model_hidden_size):
-                          individual[0][i] += self.sigma * float(torch.normal(mean=0.0, std=1.0*iter, size=(1,1)))
+                          individual[0][i] += self.sigma * float(torch.normal(mean=0.0, std=1.0*(iter+1), size=(1,1)))
                      p.append(individual)
             else: 
                 print(f"{self.search_type} is not a valid search type")
