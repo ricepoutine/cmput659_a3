@@ -17,8 +17,10 @@ method_labels = [
 ]
 
 tasks = [
-    'StairClimber',
-    #'MazeSparse'
+    #'StairClimber',
+    'MazeSparse16',
+    #'MazeSparse12',
+    #'MazeSparse8'
 ]
 data_directory = 'output/results'
 output_folder = 'plots'

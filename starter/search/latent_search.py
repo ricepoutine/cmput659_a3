@@ -83,6 +83,32 @@ class LatentSearch:
             rewards.append(mean_reward)
         return programs, torch.tensor(rewards, device=self.device)
 
+    def execute_programs(self, program_list: list[str]) -> list[float]:
+        rewards = []
+        for program in program_list:
+            try:
+                program = self.dsl.parse_str_to_node(program)
+            except AssertionError: # Invalid program
+                mean_reward = -1
+                rewards.append(mean_reward)
+                continue
+            mean_reward = 0.
+            for task_env in self.task_envs:
+                task_env.reset_state()
+                state = task_env.get_state()
+                reward = 0
+                steps = 0
+                for _ in program.run_generator(state):
+                    terminated, instant_reward = task_env.get_reward(state)
+                    reward += instant_reward
+                    steps += 1
+                    if terminated or steps > Config.data_max_demo_length:
+                        break
+                mean_reward += reward
+            mean_reward /= self.number_executions
+            rewards.append(mean_reward)
+        return rewards
+
     def search(self) -> tuple[str, float, bool]:
         current_best = ["", -float("inf"), ""]
         p = self.init_population()
