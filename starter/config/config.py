@@ -29,10 +29,10 @@ class Config:
     data_ratio_val: Annotated[float, 'Ratio of validation data.'] = 0.15
     data_ratio_test: Annotated[float, 'Ratio of test data.'] = 0.15
     
-    env_task: Annotated[str, 'Name of Karel task to solve.'] = 'StairClimber'
+    env_task: Annotated[str, 'Name of Karel task to solve.'] = 'StairClimber' #'MazeSparse'
     env_seed: Annotated[int, 'Seed for random environment generation.'] = 1
-    env_height: Annotated[int, 'Height of Karel environment.'] = 8
-    env_width: Annotated[int, 'Width of Karel environment.'] = 8
+    env_height: Annotated[int, 'Height of Karel environment.'] = 16 #8 for stairclimber
+    env_width: Annotated[int, 'Width of Karel environment.'] = 16 #8 for stairclimber
     env_enable_leaps_behaviour: Annotated[bool, 'If set, uses LEAPS version of Karel rules.'] = False
     env_is_crashable: Annotated[bool, 'If set, program stops when Karel crashes.'] = False
     

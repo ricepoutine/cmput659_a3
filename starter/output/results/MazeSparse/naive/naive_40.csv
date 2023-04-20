@@ -1,0 +1,3 @@
+Seed:,Runtime:,Reward of Final Program:,Final program:
+1,108.615133,0.125,DEF run m( IFELSE c( frontIsClear c) i( turnLeft move move turnRight WHILE c( frontIsClear c) w( move w) i) ELSE e( move turnLeft e) m)
+2,108.597025,0.125,DEF run m( putMarker turnLeft IFELSE c( frontIsClear c) i( move i) ELSE e( putMarker e) move turnRight move WHILE c( frontIsClear c) w( move w) m)

@@ -98,6 +98,9 @@ class LatentSearch:
             if current_best[1] < sorted_rewards[0]:
                 print("found better one!")
                 current_best = (sorted_candidates[0],sorted_rewards[0], sorted_latents[0])
+            #elif current_best[1] == sorted_rewards[0]:
+                #TODO IMPLEMENT TO SEE IF LENGTH ISSUE IS DUE TO BEST PROGRAM REPORTING!!! ONLY ONE EXPERIMENT: RDM_ELITE_50!
+                
 
             p = []
             #handle search types
@@ -122,8 +125,11 @@ class LatentSearch:
                         individual[0][i] += self.sigma * float(torch.normal(mean=0.0, std=1.0, size=(1,1)))
                     p.append(individual)
             elif self.search_type == "normal":
-                print("yet to be implemented!")
-                return
+                for i in range(self.population_size):
+                     individual = torch.zeros(1,self.model_hidden_size)
+                     for i in range(self.model_hidden_size):
+                          individual[0][i] += self.sigma * float(torch.normal(mean=0.0, std=1.0*iter, size=(1,1)))
+                     p.append(individual)
             else: 
                 print(f"{self.search_type} is not a valid search type")
                 return

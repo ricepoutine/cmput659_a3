@@ -43,7 +43,7 @@ def trial():
     StdoutLogger.log('Main', f'Reward of Final Program: {best_reward}') 
 
     with open(
-        "output/results/" + f"{Config.search_type}_{Config.search_number_iterations}" + ".csv", "a", newline=""
+        f"output/results/{Config.env_task}/{Config.search_type}/{Config.search_type}_{Config.search_number_iterations}" + ".csv", "a", newline=""
     ) as csvfile:
         logger = csv.writer(csvfile, delimiter=",", quoting=csv.QUOTE_MINIMAL)
         logger.writerow([Config.env_seed, str(et-st), best_reward.item(), best_program])
@@ -54,12 +54,12 @@ if __name__ == '__main__':
     #main experiment control
 
     num_trials = 20 #20 = number of seeds, used to report average best program and error
-    search_iterations = [30, 40, 50] #[10, 20, 30, 40, 50]
+    search_iterations = [40] #[10, 20, 30, 40, 50]
 
     for num_iterations in search_iterations:
         Config.search_number_iterations = num_iterations
         with open(
-            "output/results/" + f"{Config.search_type}_{Config.search_number_iterations}" + ".csv", "w+", newline=""
+            f"output/results/{Config.env_task}/{Config.search_type}/{Config.search_type}_{Config.search_number_iterations}" + ".csv", "w+", newline=""
         ) as csvfile:
             logger = csv.writer(csvfile, delimiter=",", quoting=csv.QUOTE_MINIMAL)
             logger.writerow(["Seed:", "Runtime:", "Reward of Final Program:", "Final program:"])
@@ -69,5 +69,5 @@ if __name__ == '__main__':
             trial()
 
 
-# for ease of access: 
-# python main_latent_search.py --env_seed 1 --search_number_iterations 20 --search_population_size 1028 --env_is_crashable --search_type naive
+# for ease of access: (maze sparse, no gpu)
+# python main_latent_search.py --env_seed 1 --search_number_iterations 20 --search_population_size 1028 --env_is_crashable --search_type naive --env_task MazeSparse --disable_gpu
