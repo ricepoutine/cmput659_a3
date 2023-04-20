@@ -98,13 +98,13 @@ class LatentSearch:
             if current_best[1] < sorted_rewards[0]:
                 print("found better one!")
                 current_best = [sorted_candidates[0],sorted_rewards[0], sorted_latents[0]]
-            elif current_best[1] == sorted_rewards[0] and current_best[1] == 1:
-                best_candidates = [candidate for candidate,reward in zip(sorted_candidates, sorted_rewards) if reward == current_best[1]] #will return 0:n rewards
-                for cand in best_candidates:
-                    if len(cand.split(" ")) < len(current_best[0].split(" ")):
-                        delete_me = current_best[0]
-                        current_best[0] = cand
-                        print("best candidate updated by length!", len(delete_me.split(" ")), "reduced to", len(current_best[0].split(" ")))
+            #elif current_best[1] == sorted_rewards[0] and current_best[1] == 1:
+            #    best_candidates = [candidate for candidate,reward in zip(sorted_candidates, sorted_rewards) if reward == current_best[1]] #will return 0:n rewards
+            #    for cand in best_candidates:
+            #        if len(cand.split(" ")) < len(current_best[0].split(" ")):
+            #            delete_me = current_best[0]
+            #            current_best[0] = cand
+            #            print("best candidate updated by length!", len(delete_me.split(" ")), "reduced to", len(current_best[0].split(" ")))
                 
 
             p = []
